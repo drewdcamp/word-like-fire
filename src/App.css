@@ -1,38 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap');
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  min-height: 100vh;
+  background-color: #463025;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  height: 10vh;
+  min-width: 60vw;
+  width: 80vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.App-title-a {
+  font-family: 'Libre Franklin', sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 5vh;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-title-b {
+  font-family: 'Libre Franklin', sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 5vh;
+  color: rgb(221, 107, 0);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.App-title-c {
+  font-family: 'Libre Franklin', sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 2.7vh;
+  color: white;
 }
+
+.App-divider {
+  width: 90vw;
+  height: 2px;
+  margin-top:8px;
+  margin-bottom:8px;
+  background-color: white;
+}
+
+.Passage-holder {
+  height: 10vh;
+  margin-top:32px;
+  margin-bottom:32px;
+  min-width: 60vw;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Passage-title {
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: 2.7vh;
+  color: white;
+}
+
+.Passage-player {
+  border: 0; 
+  width: 100%; 
+  height: 109px;
+}
+
+
