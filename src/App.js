@@ -61,7 +61,7 @@ function App() {
         <text className="App-title-c">BIBLE READING CHALLENGE</text>
       </header>
       <div className="App-divider" />
-      <text className="App-title-c">{scriptureTitle}</text>
+      <text className="App-title-d">{scriptureTitle}</text>
       {passageObject}
     </div>
   );
