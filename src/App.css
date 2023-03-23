@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap");
 
 .App {
   height: 100vh;
@@ -20,8 +20,33 @@
   justify-content: center;
 }
 
+.App-body {
+  height: 80vh;
+  min-width: 60vw;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
+}
+
+.App-footer {
+  height: 10vh;
+  min-width: 60vw;
+  width: 80vw;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: "Libre Franklin", sans-serif;
+  font-size: 1vh;
+  text-align: center;
+  color: white;
+}
+
 .App-title-a {
-  font-family: 'Libre Franklin', sans-serif;
+  font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
   font-size: 5vh;
@@ -29,7 +54,7 @@
 }
 
 .App-title-b {
-  font-family: 'Libre Franklin', sans-serif;
+  font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
   font-size: 5vh;
@@ -37,7 +62,7 @@
 }
 
 .App-title-c {
-  font-family: 'Libre Franklin', sans-serif;
+  font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
   font-size: 2.7vh;
@@ -45,25 +70,37 @@
 }
 
 .App-title-d {
-  font-family: 'Libre Franklin', sans-serif;
+  font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2.0vh;
+  font-size: 2vh;
   color: white;
 }
 
 .App-divider {
   width: 90vw;
   height: 2px;
-  margin-top:8px;
-  margin-bottom:8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
   background-color: white;
+}
+
+.Date-holder {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.Date-button {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: 2vh;
 }
 
 .Passage-holder {
   height: 10vh;
-  margin-top:32px;
-  margin-bottom:32px;
+  margin-top: 32px;
+  margin-bottom: 32px;
   min-width: 60vw;
   width: 80vw;
   display: flex;
@@ -73,15 +110,50 @@
 }
 
 .Passage-title {
-  font-family: 'Libre Franklin', sans-serif;
+  font-family: "Libre Franklin", sans-serif;
   font-size: 2.7vh;
   color: white;
 }
 
-.Passage-player {
-  border: 0; 
-  width: 100%; 
+.Passage-player-loading {
+  border: 0;
+  width: 100%;
+  height: 0px;
+}
+
+.Passage-player-loaded {
+  border: 0;
+  width: 100%;
   height: 109px;
 }
 
+.Placeholder-active {
+  border: 0;
+  width: 100%;
+  height: 109px;
+}
 
+.Placeholder-inactive {
+  border: 0;
+  width: 100%;
+  height: 0px;
+}
+
+a:link {
+  color: rgb(221, 107, 0);
+}
+
+/* visited link */
+a:visited {
+  color: rgb(221, 107, 0);
+}
+
+/* mouse over link */
+a:hover {
+  color: rgb(221, 63, 0);
+}
+
+/* selected link */
+a:active {
+  color: rgb(221, 0, 0);
+}
