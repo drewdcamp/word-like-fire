@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import "./App.css";
-import { useEffect, useState, useMemo } from "react";
-import { BrowserRouter, useSearchParams  } from "react-router-dom";
+import { useEffect, useState, forwardRef } from "react";
+import { BrowserRouter, useSearchParams } from "react-router-dom";
 import ReadingPlan from "./plan";
 import ContentLoader from "react-content-loader";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const App = () => {
   return (
@@ -14,8 +16,6 @@ const App = () => {
 };
 
 const AppWrapper = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
   return (
     <div className="App">
       <div className="App-header">
@@ -26,7 +26,7 @@ const AppWrapper = () => {
 
         <div className="App-divider" />
       </div>
-      <AppBody/>
+      <AppBody />
       <footer className="App-footer">
         <p>
           Download the reading plan{" "}
@@ -45,6 +45,9 @@ const AppWrapper = () => {
 };
 
 const AppBody = () => {
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [passageObject, setPassageObject] = useState([]);
   const [scriptureTitle, setScriptureTitle] = useState(
@@ -57,16 +60,16 @@ const AppBody = () => {
       ? new Date(`${dateString}T12:00:00.000Z`)
       : new Date();
 
-    console.log(now);
+    let target = now;
+    target.setDate(now.getDate() + 2);
+    if (target.getDay() === 0) {
+      target.setDate(target.getDate() + 1);
+    }
 
-    const day = now.getDay();
-    let target = new Date()
-    target.setDate(now.getDate() + (day === 5 ? 3 : 2));
-    
     let iso = target.toISOString();
     iso = iso.substring(0, iso.indexOf("T"));
 
-    setSearchParams({"date" : iso});
+    setSearchParams({ date: iso });
   };
 
   const decrementDate = () => {
@@ -76,16 +79,26 @@ const AppBody = () => {
       ? new Date(`${dateString}T12:00:00.000Z`)
       : new Date();
 
-    
+    let target = now;
+    target.setDate(now.getDate() - 2);
+    if (target.getDay() === 0) {
+      target.setDate(now.getDate() - 3);
+    }
 
-    const day = now.getDay();
-    let target = new Date();
-    target.setDate(now.getDate() - (day === 2 ? 3 : 2));
-    
     let iso = target.toISOString();
     iso = iso.substring(0, iso.indexOf("T"));
 
-    setSearchParams({"date" : iso});
+    setSearchParams({ date: iso });
+  };
+
+  const chooseDate = (newDate) => {
+    let iso = newDate[0].toISOString();
+    iso = iso.substring(0, iso.indexOf("T"));
+
+    let today = new Date().toISOString();
+    today = today.substring(0, today.indexOf("T"));
+
+    setSearchParams(iso === today ? {} : { date: iso });
   };
 
   useEffect(() => {
@@ -94,6 +107,7 @@ const AppBody = () => {
       ? new Date(`${dateString}T12:00:00.000Z`)
       : new Date();
     const start = new Date("09/12/2022");
+
     const dbd = Math.floor(
       (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -105,21 +119,29 @@ const AppBody = () => {
 
     if (dow === 6) {
       let date = now.toLocaleDateString("en-us");
+      setStartDate(now);
+      setEndDate(now);
       setScriptureTitle(`${date}`);
     } else if (dow % 2 === 0) {
-      let endDate = new Date(now);
-      endDate.setDate(endDate.getDate() + 1);
+      let tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      setStartDate(now);
+      setEndDate(tomorrow);
 
       const startString = now.toLocaleDateString("en-us");
-      const endString = endDate.toLocaleDateString("en-us");
+      const endString = tomorrow.toLocaleDateString("en-us");
 
       setScriptureTitle(`${startString} - ${endString}`);
       passageList = ReadingPlan[offset];
     } else {
-      let startDate = new Date(now);
-      startDate.setDate(startDate.getDate() - 1);
+      let yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
 
-      let startString = startDate.toLocaleDateString("en-us");
+      setStartDate(yesterday);
+      setEndDate(now);
+
+      let startString = yesterday.toLocaleDateString("en-us");
       let endString = now.toLocaleDateString("en-us");
       setScriptureTitle(`${startString} - ${endString}`);
       passageList = ReadingPlan[offset];
@@ -136,12 +158,27 @@ const AppBody = () => {
     setPassageObject(tmpPassageObject);
   }, [searchParams.get("date")]);
 
+  const isValid = (date) => {
+    const day = date.getDay();
+    return day !== 0;
+  };
+
   return (
     <div className="App-body">
-      <p className="App-title-d">Viewing Scripture For:</p>
       <div className="Date-holder">
         <button className="Date-button" onClick={decrementDate}>{`<<`}</button>
-        <button className="Date-button">{scriptureTitle}</button>
+        <DatePicker
+          className="Date-button"
+          selectsRange={true}
+          todayButton="Today"
+          startDate={startDate}
+          endDate={endDate}
+          onChange={(date) => {
+            chooseDate(date);
+          }}
+          filterDate={isValid}
+          withPortal
+        />
         <button className="Date-button" onClick={incrementDate}>{`>>`}</button>
       </div>
       {passageObject}
