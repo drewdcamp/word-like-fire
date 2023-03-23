@@ -100,6 +100,13 @@
   font-size: 1.8vh;
 }
 
+.Date-display {
+  min-width: 60vw;
+  text-align: center;
+  font-family: "Libre Franklin", sans-serif;
+  font-size: 1.8vh;
+}
+
 .Passage-container {
   min-height:70vh;
   display: flex;

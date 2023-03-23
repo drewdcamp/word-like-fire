@@ -168,7 +168,7 @@ const AppBody = () => {
       <div className="Date-holder">
         <button className="Date-button" onClick={decrementDate}>{`<<`}</button>
         <DatePicker
-          className="Date-button"
+          className="Date-display"
           selectsRange={true}
           todayButton="Today"
           startDate={startDate}
