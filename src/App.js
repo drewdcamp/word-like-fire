@@ -16,43 +16,10 @@ const App = () => {
 };
 
 const AppWrapper = () => {
-  return (
-    <div className="App">
-      <div className="App-header">
-        <div className="App-title-a">
-          WORD<span className="App-title-b">LIKE</span>FIRE
-        </div>
-        <div className="App-title-c">BIBLE READING CHALLENGE</div>
-
-        <div className="App-divider" />
-      </div>
-      <AppBody />
-      <footer className="App-footer">
-        <p>
-          Download the reading plan{" "}
-          <a href="https://www.boonesferry.church/word-like-fire">here</a>.
-          {"\n"}
-        </p>
-        <p>
-          Scripture audio is from The ESV® Bible (The Holy Bible, English
-          Standard Version®), copyright © 2001 by Crossway, a publishing
-          ministry of Good News Publishers. Used by permission. All rights
-          reserved.{" "}
-        </p>
-      </footer>
-    </div>
-  );
-};
-
-const AppBody = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [pickerOpen, setPickerOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [passageObject, setPassageObject] = useState([]);
-  const [scriptureTitle, setScriptureTitle] = useState(
-    "Scripture for 01/01/2002 - 01/02/2002:"
-  );
 
   const incrementDate = () => {
     let dateString = searchParams.get("date");
@@ -118,10 +85,8 @@ const AppBody = () => {
     let passageList = [];
 
     if (dow === 6) {
-      let date = now.toLocaleDateString("en-us");
       setStartDate(now);
       setEndDate(now);
-      setScriptureTitle(`${date}`);
     } else if (dow % 2 === 0) {
       let tomorrow = new Date(now);
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -129,10 +94,6 @@ const AppBody = () => {
       setStartDate(now);
       setEndDate(tomorrow);
 
-      const startString = now.toLocaleDateString("en-us");
-      const endString = tomorrow.toLocaleDateString("en-us");
-
-      setScriptureTitle(`${startString} - ${endString}`);
       passageList = ReadingPlan[offset];
     } else {
       let yesterday = new Date(now);
@@ -140,10 +101,6 @@ const AppBody = () => {
 
       setStartDate(yesterday);
       setEndDate(now);
-
-      let startString = yesterday.toLocaleDateString("en-us");
-      let endString = now.toLocaleDateString("en-us");
-      setScriptureTitle(`${startString} - ${endString}`);
       passageList = ReadingPlan[offset];
     }
 
@@ -164,24 +121,52 @@ const AppBody = () => {
   };
 
   return (
-    <div className="App-body">
-      <div className="Date-holder">
-        <button className="Date-button" onClick={decrementDate}>{`<<`}</button>
-        <DatePicker
-          className="Date-display"
-          selectsRange={true}
-          todayButton="Today"
-          startDate={startDate}
-          endDate={endDate}
-          onChange={(date) => {
-            chooseDate(date);
-          }}
-          filterDate={isValid}
-          withPortal
-        />
-        <button className="Date-button" onClick={incrementDate}>{`>>`}</button>
+    <div className="App">
+      <div className="App-header">
+        <div className="App-title-a">
+          WORD<span className="App-title-b">LIKE</span>FIRE
+        </div>
+        <div className="App-title-c">BIBLE READING CHALLENGE</div>
+        <div className="App-divider" />
+        <div className="Date-holder">
+          <button
+            className="Date-button"
+            onClick={decrementDate}
+          >{`<<`}</button>
+          <DatePicker
+            className="Date-display"
+            selectsRange={true}
+            todayButton="Today"
+            startDate={startDate}
+            endDate={endDate}
+            onChange={(date) => {
+              chooseDate(date);
+            }}
+            filterDate={isValid}
+            withPortal
+          />
+          <button
+            className="Date-button"
+            onClick={incrementDate}
+          >{`>>`}</button>
+        </div>
       </div>
-      {passageObject}
+
+      <div className="App-body">{passageObject}</div>
+
+      <div className="App-footer">
+        <p>
+          Download the reading plan{" "}
+          <a href="https://www.boonesferry.church/word-like-fire">here</a>.
+          {"\n"}
+        </p>
+        <p>
+          Scripture audio is from The ESV® Bible (The Holy Bible, English
+          Standard Version®), copyright © 2001 by Crossway, a publishing
+          ministry of Good News Publishers. Used by permission. All rights
+          reserved.{" "}
+        </p>
+      </div>
     </div>
   );
 };

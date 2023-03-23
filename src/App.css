@@ -11,20 +11,20 @@
 }
 
 .App-header {
-  height: 10vh;
+  height: 15vh;
   min-width: 60vw;
   width: 80vw;
   background-color: #463025;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: top;
   position: sticky;
   top:0;
 }
 
 .App-body {
-  min-height: 80vh;
+  min-height: 75vh;
   min-width: 60vw;
   width: 80vw;
   display: flex;
@@ -37,7 +37,6 @@
   height: 10vh;
   min-width: 60vw;
   width: 80vw;
-  margin-bottom: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,8 +116,8 @@
 
 .Passage-holder {
   height: 10vh;
-  margin-top: 32px;
-  margin-bottom: 32px;
+  margin-top: 16px;
+  margin-bottom: 16px;
   min-width: 60vw;
   width: 80vw;
   display: flex;
