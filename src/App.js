@@ -3,20 +3,19 @@ import "./App.css";
 import * as React from "react";
 import { useSearchParams } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
-import readingPlan from "./planSplit"
+import readingPlan from "./planSplit";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const App = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [date, setDate] = React.useState(new Date());
+  const [date, setDate] = React.useState();
 
   const passageList = React.useMemo(() => {
-    return readingPlan[Index(date)];
-  }, [date])
+    if (date) return readingPlan[Index(date)];
+  }, [date]);
 
   const passageString = React.useMemo(() => {
-
     if (passageList) {
       let passages = {};
 
@@ -43,18 +42,15 @@ const App = () => {
 
           if (start !== end) {
             passageStrings.push(`${book} ${start}-${end}`);
-          }
-          else {
+          } else {
             passageStrings.push(`${book} ${start}`);
           }
-        }
-        else {
+        } else {
           let chapters = passages[book];
 
           if (chapters.length === 1) {
             passageStrings.push(`Psalm ${chapters[0]}`);
-          }
-          else {
+          } else {
             passageStrings.push(`Psalms ${chapters.join(", ")}`);
           }
         }
@@ -64,51 +60,44 @@ const App = () => {
     }
 
     return "Loading...";
-
-
-  }, [passageList])
+  }, [passageList]);
 
   const rangeArray = React.useMemo(() => {
-    return DateRange(date);
-  }, [date])
-
-  const rangeString = React.useMemo(() => {
-    if (rangeArray.length === 1) {
-      return UsaString(rangeArray[0]);
+    if (date) {
+      return DateRange(date);
     }
 
-    return `${UsaString(rangeArray[0])} - ${UsaString(rangeArray[1])}`;
-  }, [rangeArray])
+    return [new Date()];
+  }, [date]);
+
+  React.useEffect(
+    () => {
+      let paramDate = searchParams.get("date");
+      if (paramDate) {
+        setDate(new Date(`${paramDate}T12:00:00.000Z`));
+      } else {
+        setDate(new Date());
+      }
+    },
+    [
+      /* Run Once On Load */
+    ]
+  );
 
   React.useEffect(() => {
-    let paramDate = searchParams.get("date")
-    if (paramDate) {
-      setDate(new Date(`${paramDate}T12:00:00.000Z`));
+    if (date) {
+      if (IsoString(date) !== IsoString(new Date())) {
+        setSearchParams({ date: IsoString(date) });
+      } else {
+        setSearchParams({});
+      }
     }
-    else {
-      setDate(new Date());
-    }
-  }, [/* Run Once On Load */])
-
-  React.useEffect(() => {
-    if (IsoString(date) !== IsoString(new Date())) {
-      setSearchParams({ date: IsoString(date) });
-    }
-    else {
-      setSearchParams({});
-    }
-  }, [date])
+  }, [date]);
 
   const isWeekday = (date) => {
     const day = date.getDay();
-    return (day !== 0) || isToday(date);
+    return day !== 0 || isToday(date);
   };
-
-  const handleCalendarOpen = () => {
-    document.addEventListener('touchstart', (event) => {
-        event.stopPropagation();
-    }, true);
-};
 
   return (
     <div className="App">
@@ -119,7 +108,6 @@ const App = () => {
         <div className="title-c">BIBLE READING CHALLENGE</div>
         <div className="divider" />
         <DatePicker
-          onCalendarOpen={handleCalendarOpen}
           className="date-button"
           selectsRange={true}
           todayButton="Today"
@@ -129,17 +117,16 @@ const App = () => {
             setDate(date[0]);
           }}
           filterDate={isWeekday}
-          withPortal
           autofocus={true}
+          withPortal
         />
         <div className="title-c">{passageString}</div>
         <div className="divider" />
       </div>
-      <AudioPlayer PassageList={passageList} className="body"/>
+      <AudioPlayer PassageList={passageList} className="body" />
     </div>
   );
 };
-
 
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -156,32 +143,34 @@ const Index = (date) => {
   const wbd = Math.floor(dbd / 7);
   const dow = dbd % 7;
 
-  return (3 * wbd + Math.floor(dow / 2));
-}
+  return 3 * wbd + Math.floor(dow / 2);
+};
 
 const IsoString = (date) => {
   let iso = date.toISOString();
-  return iso.substring(0, iso.indexOf("T"));;
+  return iso.substring(0, iso.indexOf("T"));
 };
 
 const UsaString = (date) => {
   let year = date.getFullYear();
 
   let month = (1 + date.getMonth()).toString();
-  month = month.length > 1 ? month : '0' + month;
+  month = month.length > 1 ? month : "0" + month;
 
   let day = date.getDate().toString();
-  day = day.length > 1 ? day : '0' + day;
+  day = day.length > 1 ? day : "0" + day;
 
-  return month + '/' + day + '/' + year;
-}
+  return month + "/" + day + "/" + year;
+};
 
 const isToday = (date) => {
-  const today = new Date()
-  return date.getDate() == today.getDate() &&
+  const today = new Date();
+  return (
+    date.getDate() == today.getDate() &&
     date.getMonth() == today.getMonth() &&
     date.getFullYear() == today.getFullYear()
-}
+  );
+};
 
 const NextDate = (date) => {
   let nextDate = new Date(date);
@@ -211,13 +200,13 @@ const Tomorrow = (date) => {
   let tomorrow = new Date(date);
   tomorrow.setDate(tomorrow.getDate() + 1);
   return tomorrow;
-}
+};
 
 const Yesterday = (date) => {
   let yesterday = new Date(date);
   yesterday.setDate(yesterday.getDate() - 1);
   return yesterday;
-}
+};
 
 const DateRange = (date) => {
   const dayOfWeek = date.getDay();
@@ -232,6 +221,5 @@ const DateRange = (date) => {
 
   return [date];
 };
-
 
 export default App;

@@ -1,158 +1,332 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import "./AudioPlayer.css";
-import * as React from 'react'
+import * as React from "react";
 import * as localForage from "localforage";
-import bibleOverview from "./esvOverview"
-import axios from 'axios';
-import { FiPause, FiPlay, FiSkipBack, FiSkipForward, FiInfo, FiShare2 } from "react-icons/fi";
+import bibleOverview from "./esvOverview";
+import axios from "axios";
+import {
+  FiPause,
+  FiPlay,
+  FiSkipBack,
+  FiSkipForward,
+  FiInfo,
+  FiShare2,
+} from "react-icons/fi";
 import esvLogo from "./esv-logo.png";
-import ReactAudioPlayer from "react-audio-player";
+import ScaleLoader from "react-spinners/ScaleLoader";
+import Slider from "@mui/material/Slider";
 
 const AudioPlayer = ({ PassageList }) => {
-    const [index, setIndex] = React.useState(0);
-    const [playing, setPlaying] = React.useState(false);
-    const [passageProgress, setPassageProgress] = React.useState(0);
-    const [passageBlob, setPassageBlob] = React.useState();
+  const [index, setIndex] = React.useState(-1);
+  const [currentPassage, setCurrentPassage] = React.useState();
+  const [loading, setLoading] = React.useState(true);
+  const [playing, setPlaying] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
+  const [duration, setDuration] = React.useState(0);
+  const [passageBlob, setPassageBlob] = React.useState();
+  const [progressString, setProgressString] = React.useState("00:00");
+  const [timeLeftString, setTimeLeftString] = React.useState("-99:99");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
-    const currentPassage = React.useMemo(() => { return PassageList[index] }, [index, PassageList]);
-
-    React.useEffect(() => {
-        const fetchPassage = async () => {
-            const { book, chapter } = splitPassageString(currentPassage);
-            console.log(`Fetching blob for ${book} Chapter ${chapter}`);
-            let audioBlob = null;
-            try {
-                audioBlob = await localForage.getItem(`${book} ${chapter}`);
-                console.log(`-Retrieved ${audioBlob} from Forage`);
-            }
-            catch (localError) {
-                console.error(localError);
-            }
-
-            if (!audioBlob) {
-                console.log(`-Grabbing Remote`);
-                try {
-                    audioBlob = await getAudioBlob(book, chapter);
-                    localForage.setItem(`${book} ${chapter}`, audioBlob);
-                }
-                catch (remoteError) {
-                    console.error(remoteError);
-                }
-            }
-
-            setPassageBlob(audioBlob);
-        }
-        fetchPassage();
-    }, [currentPassage]);
-
-    const audioElement = React.useMemo(() => {
-        if (passageBlob) {
-            console.log("Updating audioElement");
-            return new Audio(window.URL.createObjectURL(passageBlob));
-        }
-
-        console.log("Nulling audioElement");
-        return null;
-    }, [passageBlob]);
-
-    const play = () => {
-        if (audioElement) {
-            audioElement.play();
-        }
-        setPlaying(true);
-    }
-
-    const pause = () => {
+  React.useEffect(() => {
+    // Pause and clean up on unmount
+    return () => {
+      if (audioElement) {
         audioElement.pause();
-        setPlaying(false);
-    }
-
-    const nextTrack = () => {
-        setIndex((prevIndex) => {
-            return prevIndex + 1;
-        });
+        clearInterval(intervalRef.current);
+      }
     };
+  }, []);
 
-    const prevTrack = () => {
-        setIndex((prevIndex) => {
-            return prevIndex - 1;
-        });
-    };
+  React.useEffect(() => {
+    const fetchPassage = async () => {
+      const { book, chapter } = splitPassageString(currentPassage);
+      let audioBlob = null;
+      try {
+        audioBlob = await localForage.getItem(`${book} ${chapter}`);
+      } catch (localError) {
+        console.error(localError);
+      }
 
-    const prevDisabled = React.useMemo(() => { return index === 0 }, [index])
-    const nextDisabled = React.useMemo(() => { return index === PassageList.length - 1 }, [index])
-
-    React.useEffect(() => { setIndex(0) }, [PassageList])
-
-    const splitPassageString = (passage) => {
-        let parts = passage.split(" ");
-        let chapter = parts[parts.length - 1];
-        parts.splice(parts.length - 1, 1);
-        let book = parts.join(" ");
-
-        return { book, chapter }
-    }
-
-    const getUrl = (book, chapter) => {
-        if (bibleOverview[book].chapterCount > 1) {
-            return `https://audio.esv.org/david-cochran-heath/mq/${book}+${chapter}.mp3`;
-        } else {
-            return `https://audio.esv.org/david-cochran-heath/mq/${book}.mp3`;
+      if (!audioBlob) {
+        setLoading(true);
+        try {
+          audioBlob = await getAudioBlob(book, chapter);
+          localForage.setItem(`${book} ${chapter}`, audioBlob);
+        } catch (remoteError) {
+          console.error(remoteError);
         }
+      }
+
+      setPassageBlob(audioBlob);
     };
 
-    const getAudioBlob = async (book, chapter) => {
-        const url = getUrl(book, chapter);
+    if (currentPassage) fetchPassage();
+  }, [currentPassage]);
 
-        const { data } = await axios.get(url, {
-            responseType: 'arraybuffer',
-            headers: {
-                'Content-Type': 'audio/wav'
-            }
-        });
+  const audioElement = React.useMemo(() => {
+    if (passageBlob) {
+      setLoading(false);
+      const newAudio = new Audio(window.URL.createObjectURL(passageBlob));
+      return newAudio;
+    }
 
-        return new Blob([data], {
-            type: 'audio/wav'
-        });
+    setLoading(true);
+    return null;
+  }, [passageBlob]);
+
+  React.useEffect(() => {
+    if (audioElement) {
+      const { book, chapter } = splitPassageString(currentPassage);
+      setProgress(0);
+      setDuration(
+        Math.floor(bibleOverview[book].chapterTimings[chapter - 1] / 1000)
+      );
+
+      clearInterval(intervalRef.current);
+
+      if (playing) {
+        audioElement.play();
+        startTimer();
+      }
+    }
+  }, [audioElement]);
+
+  React.useEffect(() => {
+    setProgress(0);
+    setDuration(0);
+
+    const fetchAll = async () => {
+      for (const passage of PassageList) {
+        storePassage(passage);
+      }
     };
 
-    return (
-        <div className="AudioPlayer">
-            <div className="body">
-                <div className="fill" />
-                <div className="body-title">{currentPassage}</div>
-                <img src={esvLogo} alt="ESV Logo" className="logo-crop" />
+    if (PassageList) fetchAll();
 
-                <div className="body-text">Read by David Cochran Heath</div>
-                <div className="fill" />
-            </div>
-            <div className="controls">
-                <button className="side-button">
-                    <FiShare2 className="button-icon" />
-                </button>
-                <button className="side-button" onClick={prevTrack} disabled={prevDisabled}>
-                    <FiSkipBack className="button-icon" />
-                </button>
-                {playing ? (
-                    <button className="center-button" onClick={pause}>
-                        <FiPause className="button-icon" />
-                    </button>
-                ) : (
-                    <button className="center-button" onClick={play}>
-                        <FiPlay className="button-icon" />
-                    </button>
-                )}
-                <button className="side-button" onClick={nextTrack} disabled={nextDisabled}>
-                    <FiSkipForward className="button-icon" />
-                </button>
-                <button className="side-button">
-                    <FiInfo className="button-icon" />
-                </button>
-            </div>
-        </div>
+    setIndex(0);
+  }, [PassageList]);
+
+  React.useEffect(() => {
+    if (audioElement) {
+      audioElement.pause();
+      setProgress(audioElement.currentTime);
+    }
+
+    if (PassageList) {
+      setCurrentPassage(PassageList[index]);
+    }
+  }, [index, PassageList]);
+
+  React.useEffect(() => {
+    if (audioElement) {
+      if (playing) {
+        audioElement.play();
+        startTimer();
+      } else {
+        audioElement.pause();
+        clearInterval(intervalRef.current);
+      }
+    }
+  }, [playing]);
+
+  React.useEffect(() => {
+    let timeLeft = Math.ceil(duration - progress);
+    let progressM = Math.floor(progress / 60);
+    let progressS = Math.floor(progress % 60);
+    let timeLeftM = Math.floor(timeLeft / 60);
+    let timeLeftS = Math.floor(timeLeft % 60);
+
+    setProgressString(
+      `+${progressM < 10 ? "0" : ""}${progressM}:${
+        progressS < 10 ? "0" : ""
+      }${progressS}`
     );
-}
+    setTimeLeftString(
+      `-${timeLeftM < 10 ? "0" : ""}${timeLeftM}:${
+        timeLeftS < 10 ? "0" : ""
+      }${timeLeftS}`
+    );
+  }, [progress, duration]);
 
+  const intervalRef = React.useRef();
 
+  const play = () => {
+    setPlaying(true);
+    audioElement.play();
+  };
+
+  const pause = () => {
+    setPlaying(false);
+  };
+
+  const nextTrack = () => {
+    setProgress(0);
+    setDuration(0);
+    setIndex((prevIndex) => {
+      return prevIndex + 1;
+    });
+  };
+
+  const prevTrack = () => {
+    setProgress(0);
+    setDuration(0);
+    setIndex((prevIndex) => {
+      return prevIndex - 1;
+    });
+  };
+
+  const startTimer = () => {
+    clearInterval(intervalRef.current);
+
+    intervalRef.current = setInterval(() => {
+      if (audioElement.ended) {
+        if (!(index === PassageList.length - 1)) {
+          audioElement.currentTime = 0;
+          nextTrack();
+        } else {
+          audioElement.pause();
+        }
+      } else {
+        setProgress(audioElement.currentTime);
+      }
+    }, [50]);
+  };
+
+  React.useEffect(() => {
+    setIndex(0);
+  }, [PassageList]);
+
+  const splitPassageString = (passage) => {
+    if (passage) {
+      let parts = passage.split(" ");
+      let chapter = parts[parts.length - 1];
+      parts.splice(parts.length - 1, 1);
+      let book = parts.join(" ");
+
+      return { book, chapter };
+    }
+  };
+
+  const getUrl = (book, chapter) => {
+    if (bibleOverview[book].chapterCount > 1) {
+      return `https://audio.esv.org/david-cochran-heath/mq/${book}+${chapter}.mp3`;
+    } else {
+      return `https://audio.esv.org/david-cochran-heath/mq/${book}.mp3`;
+    }
+  };
+
+  const getAudioBlob = async (book, chapter) => {
+    const url = getUrl(book, chapter);
+
+    const { data } = await axios.get(url, {
+      responseType: "arraybuffer",
+      headers: {
+        "Content-Type": "audio/wav",
+      },
+    });
+
+    return new Blob([data], {
+      type: "audio/wav",
+    });
+  };
+
+  // Copies item to local forage
+  const storePassage = async (passageString) => {
+    const { book, chapter } = splitPassageString(passageString);
+
+    let audioBlob = null;
+    try {
+      audioBlob = await localForage.getItem(`${book} ${chapter}`);
+    } catch (localError) {
+      console.error(localError);
+    }
+
+    if (!audioBlob) {
+      try {
+        audioBlob = await getAudioBlob(book, chapter);
+        localForage.setItem(`${book} ${chapter}`, audioBlob);
+      } catch (remoteError) {
+        console.error(remoteError);
+      }
+    }
+  };
+
+  return (
+    <div className="AudioPlayer">
+      
+      <div className="body">
+        <div className="fill" />
+        <div className="body-title">{currentPassage}</div>
+        {loading ? (
+          <div className="loading-crop">
+            <ScaleLoader
+              color="#d69136"
+              loading
+              margin={2}
+              radius={0}
+              speedMultiplier={1}
+              width={4}
+            />
+          </div>
+        ) : (
+          <img src={esvLogo} alt="ESV Logo" className="logo-crop" />
+        )}
+        <div className="body-text">Read by David Cochran Heath</div>
+        <Slider
+          sx={{ width: "80%", color: "rgb(200, 150, 100)" }}
+          defaultValue={0}
+          value={progress}
+          max={duration}
+          onChange={(event, value) => {
+            setProgress(value);
+            audioElement.currentTime = value;
+          }}
+        />
+        <div className="time-holder">
+          <div className="time">{progressString}</div>
+          <div className="time">{timeLeftString}</div>
+        </div>
+        <div className="fill" />
+      </div>
+      <div className="controls">
+        <button className="side-button">
+          <FiShare2 className="button-icon" />
+        </button>
+        <button
+          className="side-button"
+          onClick={prevTrack}
+          disabled={index === 0}
+        >
+          <FiSkipBack className="button-icon" />
+        </button>
+        {playing ? (
+          <button className="center-button" onClick={pause}>
+            <FiPause className="button-icon" />
+          </button>
+        ) : (
+          <button className="center-button" onClick={play}>
+            <FiPlay className="button-icon" />
+          </button>
+        )}
+        <button
+          className="side-button"
+          onClick={nextTrack}
+          disabled={PassageList ? index === PassageList.length - 1 : true}
+        >
+          <FiSkipForward className="button-icon" />
+        </button>
+        <button
+          className="side-button"
+          onClick={() => {
+            setDialogOpen(true);
+          }}
+        >
+          <FiInfo className="button-icon" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default AudioPlayer;
