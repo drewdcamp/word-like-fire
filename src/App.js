@@ -135,8 +135,7 @@ const App = () => {
         <div className="title-c">{passageString}</div>
         <div className="divider" />
       </div>
-
-      <AudioPlayer PassageList={passageList} />
+      <AudioPlayer PassageList={passageList} className="body"/>
     </div>
   );
 };

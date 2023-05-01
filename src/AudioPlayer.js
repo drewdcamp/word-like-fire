@@ -56,8 +56,7 @@ const AudioPlayer = ({ PassageList }) => {
     }, [passageBlob]);
 
     const play = () => {
-        if (audioElement)
-        {
+        if (audioElement) {
             audioElement.play();
         }
         setPlaying(true);
@@ -83,23 +82,39 @@ const AudioPlayer = ({ PassageList }) => {
     const prevDisabled = React.useMemo(() => { return index === 0 }, [index])
     const nextDisabled = React.useMemo(() => { return index === PassageList.length - 1 }, [index])
 
-    const playPauseButton = React.useMemo(() => {
-        if (playing) {
-            return (
-                <button className="center-button" onClick={pause}>
-                    <FiPause className="button-icon" />
-                </button>
-            );
-        }
-
-        return (
-            <button className="center-button" onClick={play}>
-                <FiPlay className="button-icon" />
-            </button>
-        );
-    }, [playing])
-
     React.useEffect(() => { setIndex(0) }, [PassageList])
+
+    const splitPassageString = (passage) => {
+        let parts = passage.split(" ");
+        let chapter = parts[parts.length - 1];
+        parts.splice(parts.length - 1, 1);
+        let book = parts.join(" ");
+
+        return { book, chapter }
+    }
+
+    const getUrl = (book, chapter) => {
+        if (bibleOverview[book].chapterCount > 1) {
+            return `https://audio.esv.org/david-cochran-heath/mq/${book}+${chapter}.mp3`;
+        } else {
+            return `https://audio.esv.org/david-cochran-heath/mq/${book}.mp3`;
+        }
+    };
+
+    const getAudioBlob = async (book, chapter) => {
+        const url = getUrl(book, chapter);
+
+        const { data } = await axios.get(url, {
+            responseType: 'arraybuffer',
+            headers: {
+                'Content-Type': 'audio/wav'
+            }
+        });
+
+        return new Blob([data], {
+            type: 'audio/wav'
+        });
+    };
 
     return (
         <div className="AudioPlayer">
@@ -108,7 +123,7 @@ const AudioPlayer = ({ PassageList }) => {
                 <div className="body-title">{currentPassage}</div>
                 <img src={esvLogo} alt="ESV Logo" className="logo-crop" />
 
-                <div className="body-text">Read by David Cochran</div>
+                <div className="body-text">Read by David Cochran Heath</div>
                 <div className="fill" />
             </div>
             <div className="controls">
@@ -118,7 +133,15 @@ const AudioPlayer = ({ PassageList }) => {
                 <button className="side-button" onClick={prevTrack} disabled={prevDisabled}>
                     <FiSkipBack className="button-icon" />
                 </button>
-                {playPauseButton}
+                {playing ? (
+                    <button className="center-button" onClick={pause}>
+                        <FiPause className="button-icon" />
+                    </button>
+                ) : (
+                    <button className="center-button" onClick={play}>
+                        <FiPlay className="button-icon" />
+                    </button>
+                )}
                 <button className="side-button" onClick={nextTrack} disabled={nextDisabled}>
                     <FiSkipForward className="button-icon" />
                 </button>
@@ -130,27 +153,6 @@ const AudioPlayer = ({ PassageList }) => {
     );
 }
 
-const splitPassageString = (passage) => {
-    let parts = passage.split(" ");
-    let chapter = parts[parts.length - 1];
-    parts.splice(parts.length - 1, 1);
-    let book = parts.join(" ");
 
-    return { book, chapter }
-}
-
-const getUrl = (book, chapter) => {
-    if (bibleOverview[book].chapterCount > 1) {
-        return `https://audio.esv.org/david-cochran-heath/mq/${book}+${chapter}.mp3`;
-    } else {
-        return `https://audio.esv.org/david-cochran-heath/mq/${book}.mp3`;
-    }
-};
-
-const getAudioBlob = async (book, chapter) => {
-    const url = getUrl(book, chapter);
-    const response = await axios.get(url, { responseType: "arraybuffer" });
-    return new Blob([response], { type: "audio/mp3" });
-};
 
 export default AudioPlayer;

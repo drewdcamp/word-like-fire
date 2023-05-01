@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap");
 
 .App {
-  min-height: 100vh;
-  min-width: 100%;
+  height: 100vh;
+  width: 100vw;
   background: linear-gradient(0deg, rgba(45,41,41,1) 0%, rgba(98,75,56,1) 40%, rgba(144,104,68,1) 100%);
   display: flex;
   flex-direction: column;
@@ -11,36 +11,19 @@
 }
 
 .App .header {
-  min-width: 60vw;
-  width: 80vw;
   display: flex;
+  flex:1;
   flex-direction: column;
   align-items: center;
   justify-content: top;
-  position: sticky;
-  top:0;
 }
 
 .App .body {
-  width: 80vw;
+  flex:1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: top;
-}
-
-.App .footer {
-  height: 10vh;
-  min-width: 60vw;
-  width: 80vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  font-family: "Libre Franklin", sans-serif;
-  font-size: 1vh;
-  text-align: center;
-  color: white;
 }
 
 .App .title-a {
@@ -105,68 +88,6 @@
   margin-top: 8px;
   margin-bottom: 8px;
   background-color: white;
-}
-
-.Date-holder {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-.Date-button {
-  font-family: "Libre Franklin", sans-serif;
-  font-size: 1.8vh;
-}
-
-.Passage-container {
-  min-height:70vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: top;
-}
-
-.Passage-holder {
-  height: 10vh;
-  margin-top: 16px;
-  margin-bottom: 16px;
-  min-width: 60vw;
-  width: 80vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.Passage-title {
-  font-family: "Libre Franklin", sans-serif;
-  font-size: 2.7vh;
-  color: white;
-}
-
-.Passage-player-loading {
-  border: 0;
-  width: 100%;
-  height: 0px;
-}
-
-.Passage-player-loaded {
-  border: 0;
-  width: 100%;
-  height: 109px;
-}
-
-.Placeholder-active {
-  border: 0;
-  width: 100%;
-  height: 109px;
-}
-
-.Placeholder-inactive {
-  border: 0;
-  width: 100%;
-  height: 0px;
 }
 
 a:link {

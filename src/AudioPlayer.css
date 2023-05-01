@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap");
 
 .AudioPlayer {
-    width: 100vw;
-    flex: 1;
+    width:100%;
+    height:100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -33,16 +33,10 @@
 
 .AudioPlayer .logo-crop {
     width: 50%;
-    max-width: 50vh;
+    max-width: 40vh;
     aspect-ratio: 1;
     overflow: hidden;
     border-radius: 50%;
-}
-
-.AudioPlayer .logo {
-    margin: 0 auto;
-    height: 100%;
-    width: auto;
 }
 
 .AudioPlayer .fill {
