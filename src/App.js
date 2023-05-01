@@ -1,215 +1,238 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import "./App.css";
-import { useEffect, useState, forwardRef } from "react";
-import { BrowserRouter, useSearchParams } from "react-router-dom";
-import ReadingPlan from "./plan";
-import ContentLoader from "react-content-loader";
+import * as React from "react";
+import { useSearchParams } from "react-router-dom";
+import AudioPlayer from "./AudioPlayer";
+import readingPlan from "./planSplit"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <AppWrapper />
-    </BrowserRouter>
-  );
-};
-
-const AppWrapper = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   const [searchParams, setSearchParams] = useSearchParams();
-  const [passageObject, setPassageObject] = useState([]);
+  const [date, setDate] = React.useState(new Date());
 
-  const incrementDate = () => {
-    let dateString = searchParams.get("date");
-    const now = dateString
-      ? new Date(`${dateString}T12:00:00.000Z`)
-      : new Date();
+  const passageList = React.useMemo(() => {
+    return readingPlan[Index(date)];
+  }, [date])
 
-    let target = now;
-    target.setDate(now.getDate() + 2);
-    if (target.getDay() === 0) {
-      target.setDate(target.getDate() + 1);
+  const passageString = React.useMemo(() => {
+
+    if (passageList) {
+      let passages = {};
+
+      for (let passage of passageList) {
+        let parts = passage.split(" ");
+        let chapter = parts[parts.length - 1];
+        parts.splice(parts.length - 1, 1);
+        let book = parts.join(" ");
+
+        if (!(book in passages)) {
+          passages[book] = [];
+        }
+
+        passages[book].push(chapter);
+      }
+
+      let passageStrings = [];
+
+      for (const book in passages) {
+        if (book !== "Psalm") {
+          let chapters = passages[book];
+          let start = chapters[0];
+          let end = chapters[chapters.length - 1];
+
+          if (start !== end) {
+            passageStrings.push(`${book} ${start}-${end}`);
+          }
+          else {
+            passageStrings.push(`${book} ${start}`);
+          }
+        }
+        else {
+          let chapters = passages[book];
+
+          if (chapters.length === 1) {
+            passageStrings.push(`Psalm ${chapters[0]}`);
+          }
+          else {
+            passageStrings.push(`Psalms ${chapters.join(", ")}`);
+          }
+        }
+      }
+
+      return passageStrings.join("; ");
     }
 
-    let iso = target.toISOString();
-    iso = iso.substring(0, iso.indexOf("T"));
+    return "Loading...";
 
-    setSearchParams({ date: iso });
-  };
 
-  const decrementDate = () => {
-    let dateString = searchParams.get("date");
+  }, [passageList])
 
-    const now = dateString
-      ? new Date(`${dateString}T12:00:00.000Z`)
-      : new Date();
+  const rangeArray = React.useMemo(() => {
+    return DateRange(date);
+  }, [date])
 
-    let target = now;
-    target.setDate(now.getDate() - 2);
-    if (target.getDay() === 0) {
-      target.setDate(now.getDate() - 3);
+  const rangeString = React.useMemo(() => {
+    if (rangeArray.length === 1) {
+      return UsaString(rangeArray[0]);
     }
 
-    let iso = target.toISOString();
-    iso = iso.substring(0, iso.indexOf("T"));
+    return `${UsaString(rangeArray[0])} - ${UsaString(rangeArray[1])}`;
+  }, [rangeArray])
 
-    setSearchParams({ date: iso });
-  };
-
-  const chooseDate = (newDate) => {
-    let iso = newDate[0].toISOString();
-    iso = iso.substring(0, iso.indexOf("T"));
-
-    let today = new Date().toISOString();
-    today = today.substring(0, today.indexOf("T"));
-
-    setSearchParams(iso === today ? {} : { date: iso });
-  };
-
-  useEffect(() => {
-    let dateString = searchParams.get("date");
-    const now = dateString
-      ? new Date(`${dateString}T12:00:00.000Z`)
-      : new Date();
-    const start = new Date("09/12/2022");
-
-    const dbd = Math.floor(
-      (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
-    );
-    const wbd = Math.floor(dbd / 7);
-    const dow = dbd % 7;
-
-    let offset = 3 * wbd + Math.floor(dow / 2);
-    let passageList = [];
-
-    if (dow === 6) {
-      setStartDate(now);
-      setEndDate(now);
-    } else if (dow % 2 === 0) {
-      let tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-
-      setStartDate(now);
-      setEndDate(tomorrow);
-
-      passageList = ReadingPlan[offset];
-    } else {
-      let yesterday = new Date(now);
-      yesterday.setDate(yesterday.getDate() - 1);
-
-      setStartDate(yesterday);
-      setEndDate(now);
-      passageList = ReadingPlan[offset];
+  React.useEffect(() => {
+    let paramDate = searchParams.get("date")
+    if (paramDate) {
+      setDate(new Date(`${paramDate}T12:00:00.000Z`));
     }
-
-    let tmpPassageObject = [];
-
-    for (let i = 0; i < passageList.length; i++) {
-      tmpPassageObject.push(
-        <Passage key={passageList[i]} passageString={passageList[i]} />
-      );
+    else {
+      setDate(new Date());
     }
+  }, [/* Run Once On Load */])
 
-    setPassageObject(tmpPassageObject);
-  }, [searchParams.get("date")]);
+  React.useEffect(() => {
+    if (IsoString(date) !== IsoString(new Date())) {
+      setSearchParams({ date: IsoString(date) });
+    }
+    else {
+      setSearchParams({});
+    }
+  }, [date])
 
-  const isValid = (date) => {
+  const isWeekday = (date) => {
     const day = date.getDay();
-    return day !== 0;
+    return (day !== 0) || isToday(date);
   };
+
+  const handleCalendarOpen = () => {
+    document.addEventListener('touchstart', (event) => {
+        event.stopPropagation();
+    }, true);
+};
 
   return (
     <div className="App">
-      <div className="App-header">
-        <div className="App-title-a">
-          WORD<span className="App-title-b">LIKE</span>FIRE
+      <div className="header">
+        <div className="title-a">
+          WORD<span className="title-b">LIKE</span>FIRE
         </div>
-        <div className="App-title-c">BIBLE READING CHALLENGE</div>
-        <div className="App-divider" />
-        <div className="Date-holder">
-          <button
-            className="Date-button"
-            onClick={decrementDate}
-          >{`<<`}</button>
-          <DatePicker
-            className="Date-display"
-            selectsRange={true}
-            todayButton="Today"
-            startDate={startDate}
-            endDate={endDate}
-            onChange={(date) => {
-              chooseDate(date);
-            }}
-            filterDate={isValid}
-            withPortal
-          />
-          <button
-            className="Date-button"
-            onClick={incrementDate}
-          >{`>>`}</button>
-        </div>
+        <div className="title-c">BIBLE READING CHALLENGE</div>
+        <div className="divider" />
+        <DatePicker
+          onCalendarOpen={handleCalendarOpen}
+          className="date-button"
+          selectsRange={true}
+          todayButton="Today"
+          startDate={rangeArray[0]}
+          endDate={rangeArray[rangeArray.length - 1]}
+          onChange={(date) => {
+            setDate(date[0]);
+          }}
+          filterDate={isWeekday}
+          withPortal
+          autofocus={true}
+        />
+        <div className="title-c">{passageString}</div>
+        <div className="divider" />
       </div>
 
-      <div className="App-body">{passageObject}</div>
-
-      <div className="App-footer">
-        <p>
-          Download the reading plan{" "}
-          <a href="https://www.boonesferry.church/word-like-fire">here</a>.
-          {"\n"}
-        </p>
-        <p>
-          Scripture audio is from The ESV® Bible (The Holy Bible, English
-          Standard Version®), copyright © 2001 by Crossway, a publishing
-          ministry of Good News Publishers. Used by permission. All rights
-          reserved.{" "}
-        </p>
-      </div>
+      <AudioPlayer PassageList={passageList} />
     </div>
   );
 };
 
-const Passage = ({ passageString }) => {
-  const [activeClass, setActiveClass] = useState("Passage-player-loading");
-  const [placeholderClass, setPlaceholderClass] =
-    useState("Placeholder-active");
-  const [queryString, setQueryString] = useState("");
 
-  useEffect(() => {
-    let tmp = passageString;
-    tmp = tmp.replaceAll(" ", "+");
-    tmp = tmp.replaceAll(",", "%2C");
-    tmp = `https://www.esv.org/audio-player/${tmp}/`;
-    setQueryString(tmp);
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+// HELPER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-    const timeout = setTimeout(() => {
-      setActiveClass("Passage-player-loaded");
-      setPlaceholderClass("Placeholder-inactive");
-    }, 500);
+const Index = (date) => {
+  const start = new Date("09/12/2022");
 
-    return () => clearTimeout(timeout);
-  }, []);
-
-  return (
-    <div className="Passage-holder">
-      <ContentLoader
-        className={placeholderClass}
-        preserveAspectRatio="none"
-        backgroundColor="#463025"
-        foregroundColor="#564035"
-        animateBegin="-0.1"
-        speed={1}
-        viewBox="0 0 100 100"
-      >
-        <rect x="0" y="30" width="100" height="70" />
-        <rect x="0" y="0" width="20" height="20" />
-        <rect x="85" y="0" width="15" height="20" />
-      </ContentLoader>
-      <iframe src={queryString} className={activeClass} title={passageString} />
-    </div>
+  const dbd = Math.floor(
+    (date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
   );
+  const wbd = Math.floor(dbd / 7);
+  const dow = dbd % 7;
+
+  return (3 * wbd + Math.floor(dow / 2));
+}
+
+const IsoString = (date) => {
+  let iso = date.toISOString();
+  return iso.substring(0, iso.indexOf("T"));;
 };
+
+const UsaString = (date) => {
+  let year = date.getFullYear();
+
+  let month = (1 + date.getMonth()).toString();
+  month = month.length > 1 ? month : '0' + month;
+
+  let day = date.getDate().toString();
+  day = day.length > 1 ? day : '0' + day;
+
+  return month + '/' + day + '/' + year;
+}
+
+const isToday = (date) => {
+  const today = new Date()
+  return date.getDate() == today.getDate() &&
+    date.getMonth() == today.getMonth() &&
+    date.getFullYear() == today.getFullYear()
+}
+
+const NextDate = (date) => {
+  let nextDate = new Date(date);
+  const dayOfWeek = date.getDay();
+  let offset = 2;
+  if (dayOfWeek === 5) {
+    offset = 3;
+  }
+
+  nextDate.setDate(nextDate.getDate() + offset);
+  return nextDate;
+};
+
+const PrevDate = (date) => {
+  let nextDate = new Date(date);
+  const dayOfWeek = date.getDay();
+  let offset = 2;
+  if (dayOfWeek === 2) {
+    offset = 3;
+  }
+
+  nextDate.setDate(nextDate.getDate() - offset);
+  return nextDate;
+};
+
+const Tomorrow = (date) => {
+  let tomorrow = new Date(date);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow;
+}
+
+const Yesterday = (date) => {
+  let yesterday = new Date(date);
+  yesterday.setDate(yesterday.getDate() - 1);
+  return yesterday;
+}
+
+const DateRange = (date) => {
+  const dayOfWeek = date.getDay();
+
+  if (dayOfWeek % 2 === 1) {
+    return [date, Tomorrow(date)];
+  }
+
+  if (dayOfWeek !== 0) {
+    return [Yesterday(date), date];
+  }
+
+  return [date];
+};
+
 
 export default App;

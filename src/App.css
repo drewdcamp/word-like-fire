@@ -3,18 +3,16 @@
 .App {
   min-height: 100vh;
   min-width: 100%;
-  background-color: #463025;
+  background: linear-gradient(0deg, rgba(45,41,41,1) 0%, rgba(98,75,56,1) 40%, rgba(144,104,68,1) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: top;
 }
 
-.App-header {
-  height: 15vh;
+.App .header {
   min-width: 60vw;
   width: 80vw;
-  background-color: #463025;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,9 +21,7 @@
   top:0;
 }
 
-.App-body {
-  min-height: 75vh;
-  min-width: 60vw;
+.App .body {
   width: 80vw;
   display: flex;
   flex-direction: column;
@@ -33,7 +29,7 @@
   justify-content: top;
 }
 
-.App-footer {
+.App .footer {
   height: 10vh;
   min-width: 60vw;
   width: 80vw;
@@ -47,7 +43,7 @@
   color: white;
 }
 
-.App-title-a {
+.App .title-a {
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
@@ -55,15 +51,15 @@
   color: white;
 }
 
-.App-title-b {
+.App .title-b {
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
   font-size: 5vh;
-  color: rgb(221, 107, 0);
+  color: rgb(52, 52, 52);
 }
 
-.App-title-c {
+.App .title-c {
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
@@ -71,7 +67,31 @@
   color: white;
 }
 
-.App-title-d {
+.App .date-button {
+  font-family: "Libre Franklin", sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 2.7vh;
+  background-color: transparent;
+  border-width: 2px;
+  border-color: white;
+  border-radius: 2vh;
+  color: white;
+}
+
+.App .date-button:active {
+  color: gray;
+}
+
+.App .summary {
+  font-family: "Libre Franklin", sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 2.7vh;
+  color: white;
+}
+
+.App .title-d {
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
@@ -79,7 +99,7 @@
   color: white;
 }
 
-.App-divider {
+.App .divider {
   width: 90vw;
   height: 2px;
   margin-top: 8px;
@@ -95,13 +115,6 @@
 }
 
 .Date-button {
-  font-family: "Libre Franklin", sans-serif;
-  font-size: 1.8vh;
-}
-
-.Date-display {
-  min-width: 60vw;
-  text-align: center;
   font-family: "Libre Franklin", sans-serif;
   font-size: 1.8vh;
 }
