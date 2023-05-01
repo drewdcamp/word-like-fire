@@ -1,32 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import "./AudioPlayer.css";
 import * as React from "react";
-import * as localForage from "localforage";
 import bibleOverview from "./esvOverview";
-import axios from "axios";
-import {
-  FiPause,
-  FiPlay,
-  FiSkipBack,
-  FiSkipForward,
-  FiInfo,
-  FiShare2,
-} from "react-icons/fi";
 import esvLogo from "./esv-logo.png";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import Slider from "@mui/material/Slider";
+import AudioControls from "./AudioControls";
+import useScriptureAudio from "./useScriptureAudio";
+import {storePassage} from "./useScriptureAudio";
 
 const AudioPlayer = ({ PassageList }) => {
   const [index, setIndex] = React.useState(-1);
   const [currentPassage, setCurrentPassage] = React.useState();
-  const [loading, setLoading] = React.useState(true);
   const [playing, setPlaying] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [duration, setDuration] = React.useState(0);
-  const [passageBlob, setPassageBlob] = React.useState();
   const [progressString, setProgressString] = React.useState("00:00");
   const [timeLeftString, setTimeLeftString] = React.useState("-99:99");
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  const [loading, audioElement] = useScriptureAudio(currentPassage);
 
   React.useEffect(() => {
     // Pause and clean up on unmount
@@ -38,42 +30,16 @@ const AudioPlayer = ({ PassageList }) => {
     };
   }, []);
 
-  React.useEffect(() => {
-    const fetchPassage = async () => {
-      const { book, chapter } = splitPassageString(currentPassage);
-      let audioBlob = null;
-      try {
-        audioBlob = await localForage.getItem(`${book} ${chapter}`);
-      } catch (localError) {
-        console.error(localError);
-      }
+  const splitPassageString = (passage) => {
+    if (passage) {
+      let parts = passage.split(" ");
+      let chapter = parts[parts.length - 1];
+      parts.splice(parts.length - 1, 1);
+      let book = parts.join(" ");
 
-      if (!audioBlob) {
-        setLoading(true);
-        try {
-          audioBlob = await getAudioBlob(book, chapter);
-          localForage.setItem(`${book} ${chapter}`, audioBlob);
-        } catch (remoteError) {
-          console.error(remoteError);
-        }
-      }
-
-      setPassageBlob(audioBlob);
-    };
-
-    if (currentPassage) fetchPassage();
-  }, [currentPassage]);
-
-  const audioElement = React.useMemo(() => {
-    if (passageBlob) {
-      setLoading(false);
-      const newAudio = new Audio(window.URL.createObjectURL(passageBlob));
-      return newAudio;
+      return { book, chapter };
     }
-
-    setLoading(true);
-    return null;
-  }, [passageBlob]);
+  };
 
   React.useEffect(() => {
     if (audioElement) {
@@ -92,6 +58,7 @@ const AudioPlayer = ({ PassageList }) => {
     }
   }, [audioElement]);
 
+  // Fetch all passages when the passage list changes
   React.useEffect(() => {
     setProgress(0);
     setDuration(0);
@@ -151,16 +118,16 @@ const AudioPlayer = ({ PassageList }) => {
 
   const intervalRef = React.useRef();
 
-  const play = () => {
+  const playButton = () => {
     setPlaying(true);
     audioElement.play();
   };
 
-  const pause = () => {
+  const pauseButton = () => {
     setPlaying(false);
   };
 
-  const nextTrack = () => {
+  const nextButton = () => {
     setProgress(0);
     setDuration(0);
     setIndex((prevIndex) => {
@@ -168,7 +135,7 @@ const AudioPlayer = ({ PassageList }) => {
     });
   };
 
-  const prevTrack = () => {
+  const prevButton = () => {
     setProgress(0);
     setDuration(0);
     setIndex((prevIndex) => {
@@ -183,7 +150,7 @@ const AudioPlayer = ({ PassageList }) => {
       if (audioElement.ended) {
         if (!(index === PassageList.length - 1)) {
           audioElement.currentTime = 0;
-          nextTrack();
+          nextButton();
         } else {
           audioElement.pause();
         }
@@ -197,64 +164,8 @@ const AudioPlayer = ({ PassageList }) => {
     setIndex(0);
   }, [PassageList]);
 
-  const splitPassageString = (passage) => {
-    if (passage) {
-      let parts = passage.split(" ");
-      let chapter = parts[parts.length - 1];
-      parts.splice(parts.length - 1, 1);
-      let book = parts.join(" ");
-
-      return { book, chapter };
-    }
-  };
-
-  const getUrl = (book, chapter) => {
-    if (bibleOverview[book].chapterCount > 1) {
-      return `https://audio.esv.org/david-cochran-heath/mq/${book}+${chapter}.mp3`;
-    } else {
-      return `https://audio.esv.org/david-cochran-heath/mq/${book}.mp3`;
-    }
-  };
-
-  const getAudioBlob = async (book, chapter) => {
-    const url = getUrl(book, chapter);
-
-    const { data } = await axios.get(url, {
-      responseType: "arraybuffer",
-      headers: {
-        "Content-Type": "audio/wav",
-      },
-    });
-
-    return new Blob([data], {
-      type: "audio/wav",
-    });
-  };
-
-  // Copies item to local forage
-  const storePassage = async (passageString) => {
-    const { book, chapter } = splitPassageString(passageString);
-
-    let audioBlob = null;
-    try {
-      audioBlob = await localForage.getItem(`${book} ${chapter}`);
-    } catch (localError) {
-      console.error(localError);
-    }
-
-    if (!audioBlob) {
-      try {
-        audioBlob = await getAudioBlob(book, chapter);
-        localForage.setItem(`${book} ${chapter}`, audioBlob);
-      } catch (remoteError) {
-        console.error(remoteError);
-      }
-    }
-  };
-
   return (
     <div className="AudioPlayer">
-      
       <div className="body">
         <div className="fill" />
         <div className="body-title">{currentPassage}</div>
@@ -289,42 +200,15 @@ const AudioPlayer = ({ PassageList }) => {
         </div>
         <div className="fill" />
       </div>
-      <div className="controls">
-        <button className="side-button">
-          <FiShare2 className="button-icon" />
-        </button>
-        <button
-          className="side-button"
-          onClick={prevTrack}
-          disabled={index === 0}
-        >
-          <FiSkipBack className="button-icon" />
-        </button>
-        {playing ? (
-          <button className="center-button" onClick={pause}>
-            <FiPause className="button-icon" />
-          </button>
-        ) : (
-          <button className="center-button" onClick={play}>
-            <FiPlay className="button-icon" />
-          </button>
-        )}
-        <button
-          className="side-button"
-          onClick={nextTrack}
-          disabled={PassageList ? index === PassageList.length - 1 : true}
-        >
-          <FiSkipForward className="button-icon" />
-        </button>
-        <button
-          className="side-button"
-          onClick={() => {
-            setDialogOpen(true);
-          }}
-        >
-          <FiInfo className="button-icon" />
-        </button>
-      </div>
+      <AudioControls 
+        playClicked={playButton}
+        pauseClicked={pauseButton}
+        nextClicked={nextButton}
+        prevClicked={prevButton}
+        index={index}
+        playing={playing}
+        PassageList={PassageList}
+      />
     </div>
   );
 };
