@@ -151,49 +151,13 @@ const IsoString = (date) => {
   return iso.substring(0, iso.indexOf("T"));
 };
 
-const UsaString = (date) => {
-  let year = date.getFullYear();
-
-  let month = (1 + date.getMonth()).toString();
-  month = month.length > 1 ? month : "0" + month;
-
-  let day = date.getDate().toString();
-  day = day.length > 1 ? day : "0" + day;
-
-  return month + "/" + day + "/" + year;
-};
-
 const isToday = (date) => {
   const today = new Date();
   return (
-    date.getDate() == today.getDate() &&
-    date.getMonth() == today.getMonth() &&
-    date.getFullYear() == today.getFullYear()
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
   );
-};
-
-const NextDate = (date) => {
-  let nextDate = new Date(date);
-  const dayOfWeek = date.getDay();
-  let offset = 2;
-  if (dayOfWeek === 5) {
-    offset = 3;
-  }
-
-  nextDate.setDate(nextDate.getDate() + offset);
-  return nextDate;
-};
-
-const PrevDate = (date) => {
-  let nextDate = new Date(date);
-  const dayOfWeek = date.getDay();
-  let offset = 2;
-  if (dayOfWeek === 2) {
-    offset = 3;
-  }
-
-  nextDate.setDate(nextDate.getDate() - offset);
-  return nextDate;
 };
 
 const Tomorrow = (date) => {
