@@ -15,10 +15,18 @@ const splitPassageString = (passage) => {
 };
 
 const getUrl = (book, chapter) => {
+  console.log(window.location.href);
+  let baseUrl = window.location.href;
+  if (baseUrl.includes('?'))
+    baseUrl = baseUrl.split('?')[0];
+    
+  if (baseUrl.includes("localhost"))
+    baseUrl = "http://localhost:3000"
+
   if (bibleOverview[book].chapterCount > 1) {
-    return `https://audio.esv.org/david-cochran-heath/mq/${book}+${chapter}.mp3`;
+    return `${baseUrl}/david-cochran-heath/mq/${book}+${chapter}.mp3`;
   } else {
-    return `https://audio.esv.org/david-cochran-heath/mq/${book}.mp3`;
+    return `${baseUrl}/david-cochran-heath/mq/${book}.mp3`;
   }
 };
 
