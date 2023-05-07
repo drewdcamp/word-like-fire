@@ -45,7 +45,7 @@ const AudioPlayer = ({ PassageList }) => {
     if (audioElement) {
       const { book, chapter } = splitPassageString(currentPassage);
       setProgress(0);
-      setDuration(
+      setDuration(        
         Math.floor(bibleOverview[book].chapterTimings[chapter - 1] / 1000)
       );
 
