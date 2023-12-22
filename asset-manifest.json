@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/word-like-fire/static/css/main.e9f12dee.css",
-    "main.js": "/word-like-fire/static/js/main.eb407bf0.js",
+    "main.js": "/word-like-fire/static/js/main.c45b3634.js",
     "static/js/787.bc8a48c1.chunk.js": "/word-like-fire/static/js/787.bc8a48c1.chunk.js",
     "static/media/esv-logo.png": "/word-like-fire/static/media/esv-logo.10d02634015b4a0af0fa.png",
     "index.html": "/word-like-fire/index.html",
     "main.e9f12dee.css.map": "/word-like-fire/static/css/main.e9f12dee.css.map",
-    "main.eb407bf0.js.map": "/word-like-fire/static/js/main.eb407bf0.js.map",
+    "main.c45b3634.js.map": "/word-like-fire/static/js/main.c45b3634.js.map",
     "787.bc8a48c1.chunk.js.map": "/word-like-fire/static/js/787.bc8a48c1.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e9f12dee.css",
-    "static/js/main.eb407bf0.js"
+    "static/js/main.c45b3634.js"
   ]
 }
