@@ -185,7 +185,7 @@ const AudioPlayer = ({ PassageList }) => {
         )}
         <div className="body-text">Read by David Cochran Heath</div>
         <Slider
-          sx={{ width: "80%", color: "rgb(200, 150, 100)" }}
+          sx={{ width: "80%", color: "rgb(25, 150, 200)" }}
           defaultValue={0}
           value={progress}
           max={duration}

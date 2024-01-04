@@ -12,7 +12,7 @@ const App = () => {
   const [date, setDate] = React.useState();
 
   const passageList = React.useMemo(() => {
-    if (date) return readingPlan[Index(date)];
+    if (date) return readingPlan[Index(date) % readingPlan.length];
   }, [date]);
 
   const passageString = React.useMemo(() => {
