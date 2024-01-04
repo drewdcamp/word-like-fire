@@ -18,6 +18,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: top;
+  text-align: center;
 }
 
 .App .header {
@@ -40,7 +41,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 5vh;
+  font-size: xx-large;
   color: white;
 }
 
@@ -48,7 +49,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 5vh;
+  font-size: xx-large;
   color: var(--background-stop0-color);
 }
 
@@ -56,7 +57,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2.7vh;
+  font-size: x-large;
   color: white;
 }
 
@@ -64,7 +65,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2.7vh;
+  font-size: x-large;
   background-color: transparent;
   border-width: 2px;
   border-color: white;
@@ -80,7 +81,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2.7vh;
+  font-size: x-large;
   color: white;
 }
 
@@ -88,7 +89,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2vh;
+  font-size: x-large;
   color: white;
 }
 

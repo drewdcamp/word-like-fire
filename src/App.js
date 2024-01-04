@@ -70,6 +70,14 @@ const App = () => {
     return [new Date()];
   }, [date]);
 
+  const inFrame = React.useMemo(() => {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
+  }, []);
+
   React.useEffect(
     () => {
       let paramDate = searchParams.get("date");
@@ -101,28 +109,48 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="header">
-        <div className="title-a">
-          WORD<span className="title-b">LIKE</span>FIRE
+      {inFrame ? (
+        <div className="header">
+          <DatePicker
+            className="date-button"
+            selectsRange={true}
+            todayButton="Today"
+            startDate={rangeArray[0]}
+            endDate={rangeArray[rangeArray.length - 1]}
+            onChange={(date) => {
+              setDate(date[0]);
+            }}
+            filterDate={isWeekday}
+            autofocus={true}
+            withPortal
+          />
+          <div className="title-c">{passageString}</div>
+          <div className="divider" />
         </div>
-        <div className="title-c">BIBLE READING CHALLENGE</div>
-        <div className="divider" />
-        <DatePicker
-          className="date-button"
-          selectsRange={true}
-          todayButton="Today"
-          startDate={rangeArray[0]}
-          endDate={rangeArray[rangeArray.length - 1]}
-          onChange={(date) => {
-            setDate(date[0]);
-          }}
-          filterDate={isWeekday}
-          autofocus={true}
-          withPortal
-        />
-        <div className="title-c">{passageString}</div>
-        <div className="divider" />
-      </div>
+      ) : (
+        <div className="header">
+          <div className="title-a">
+            WORD<span className="title-b">LIKE</span>FIRE
+          </div>
+          <div className="title-c">BIBLE READING CHALLENGE</div>
+          <div className="divider" />
+          <DatePicker
+            className="date-button"
+            selectsRange={true}
+            todayButton="Today"
+            startDate={rangeArray[0]}
+            endDate={rangeArray[rangeArray.length - 1]}
+            onChange={(date) => {
+              setDate(date[0]);
+            }}
+            filterDate={isWeekday}
+            autofocus={true}
+            withPortal
+          />
+          <div className="title-c">{passageString}</div>
+          <div className="divider" />
+        </div>
+      )}
       <AudioPlayer PassageList={passageList} className="body" />
     </div>
   );
