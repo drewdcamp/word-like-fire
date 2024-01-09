@@ -111,6 +111,7 @@ const App = () => {
     <div className="App">
       {inFrame ? (
         <div className="header">
+          <div className="divider" />
           <DatePicker
             className="date-button"
             selectsRange={true}

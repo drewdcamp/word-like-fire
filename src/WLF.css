@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap");
+
+:root {
+  --main-text-color: rgb(25, 150, 200);
+  --button-press-color: rgb(50, 75, 100);
+  --button-disable-color: rgb(62, 76, 90);
+
+  --background-stop0-color: rgba(25, 50, 75, 1);
+  --background-stop1-color: rgba(10, 85, 115, 1);
+  --background-stop2-color: rgb(25, 150, 200);
+}
+
+/* Main Layout Styles */
+
+.WLF {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(
+    0deg,
+    var(--background-stop0-color) 0%,
+    var(--background-stop1-color) 40%,
+    var(--background-stop2-color) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
+  text-align: center;
+}
+
+.WLF .header {
+  flex: 0 0 96px;
+  width: 100vw;
+  background: coral;
+}
+
+.WLF .body {
+  flex: 1 0 auto;
+  width: 100vw;
+}
+
+.WLF .progress {
+  flex: 0 0 64px;
+  width: 80vw;
+  background: maroon;
+}
+
+.WLF .controls {
+  flex: 0 0 96px;
+  width: 100vw;
+  background: coral;
+}
+
+/* Header Styles */
+
+.WLF .title-main {
+  font-family: "Libre Franklin", sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: xx-large;
+  color: white;
+}
+
+.WLF .title-sub {
+  font-family: "Libre Franklin", sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: large;
+  color: white;
+}
+
+.WLF .title-accent {
+  font-family: "Libre Franklin", sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: xx-large;
+  color: var(--background-stop0-color);
+}
+
+.WLF .date-button {
+  font-family: "Libre Franklin", sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: large;
+  border-radius: 2vh;
+  background-color: transparent;
+  border-width: 2px;
+  border-color: white;
+  color: white;
+}
