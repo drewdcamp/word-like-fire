@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/word-like-fire/static/css/main.df72eac2.css",
-    "main.js": "/word-like-fire/static/js/main.010cca3a.js",
+    "main.css": "/word-like-fire/static/css/main.c461b29c.css",
+    "main.js": "/word-like-fire/static/js/main.e259183b.js",
     "static/js/787.bc8a48c1.chunk.js": "/word-like-fire/static/js/787.bc8a48c1.chunk.js",
     "index.html": "/word-like-fire/index.html",
-    "main.df72eac2.css.map": "/word-like-fire/static/css/main.df72eac2.css.map",
-    "main.010cca3a.js.map": "/word-like-fire/static/js/main.010cca3a.js.map",
+    "main.c461b29c.css.map": "/word-like-fire/static/css/main.c461b29c.css.map",
+    "main.e259183b.js.map": "/word-like-fire/static/js/main.e259183b.js.map",
     "787.bc8a48c1.chunk.js.map": "/word-like-fire/static/js/787.bc8a48c1.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.df72eac2.css",
-    "static/js/main.010cca3a.js"
+    "static/css/main.c461b29c.css",
+    "static/js/main.e259183b.js"
   ]
 }
