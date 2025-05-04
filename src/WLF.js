@@ -1,8 +1,9 @@
 import "./WLF.css";
 import * as React from "react";
-import DatePicker from "react-datepicker";
 import Slider from "@mui/material/Slider";
 import Dialog from "@mui/material/Dialog";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import {
   FiPause,
@@ -36,7 +37,10 @@ const WLF = () => {
 
   const Index = React.useMemo(() => {
     if (date) {
-      const start = new Date("09/12/2022");
+      const oldStart = new Date("09/12/2022");
+      const newStart = new Date("05/12/2025");
+
+      const start = date < newStart ? oldStart : newStart;
 
       const dbd = Math.floor(
         (date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
