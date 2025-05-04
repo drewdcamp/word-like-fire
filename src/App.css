@@ -1,18 +1,34 @@
 @import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap");
 
+:root {
+  --main-text-color: rgb(25, 150, 200);
+  --button-press-color: rgb(50, 75, 100);
+  --button-disable-color: rgb(62, 76, 90);
+
+  --background-stop0-color: rgba(25,50,75,1);
+  --background-stop1-color: rgba(10,85,115,1);
+  --background-stop2-color: rgb(25, 150, 200);
+}
+
 .App {
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(0deg, rgba(45,41,41,1) 0%, rgba(98,75,56,1) 40%, rgba(144,104,68,1) 100%);
+  background: linear-gradient(
+    0deg,
+    var(--background-stop0-color) 0%,
+    var(--background-stop1-color) 40%,
+    var(--background-stop2-color) 100%
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: top;
+  text-align: center;
 }
 
 .App .header {
   display: flex;
-  flex:1;
+  flex: 0 0 96px;
   flex-direction: column;
   align-items: center;
   justify-content: top;
@@ -30,7 +46,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 5vh;
+  font-size: xx-large;
   color: white;
 }
 
@@ -38,15 +54,15 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 5vh;
-  color: rgb(52, 52, 52);
+  font-size: xx-large;
+  color: var(--background-stop0-color);
 }
 
 .App .title-c {
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2.7vh;
+  font-size: x-large;
   color: white;
 }
 
@@ -54,7 +70,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2.7vh;
+  font-size: x-large;
   background-color: transparent;
   border-width: 2px;
   border-color: white;
@@ -70,7 +86,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2.7vh;
+  font-size: x-large;
   color: white;
 }
 
@@ -78,7 +94,7 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 2vh;
+  font-size: x-large;
   color: white;
 }
 

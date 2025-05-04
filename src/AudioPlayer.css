@@ -22,14 +22,14 @@
 .AudioPlayer .body-title {
     color: white;
     font-family: "Libre Franklin", sans-serif;
-    font-size: 5vh;
+    font-size: xxx-large;
     padding: 16px;
 }
 
 .AudioPlayer .body-text {
     color: white;
     font-family: "Libre Franklin", sans-serif;
-    font-size: 3vh;
+    font-size: x-large;
     padding: 16px;
 }
 
@@ -60,7 +60,7 @@
 
 .AudioPlayer .slider {
     width: 80%;
-    color: rgb(200, 150, 100)
+    color: var(--main-text-color)
 }
 
 .AudioPlayer .time-holder {
@@ -74,7 +74,7 @@
 .AudioPlayer .time {
     font-size: 2vh;
     font-family: 'Roboto Mono', monospace;
-    color: rgb(200, 150, 100)
+    color: var(--main-text-color)
 }
 
 .AudioPlayer .controls {
@@ -92,11 +92,11 @@
     border-radius: 50%;
     border-width: 0px;
     aspect-ratio: 1;
-    color: rgb(200, 150, 100);
+    color: var(--main-text-color)
 }
 
 .AudioPlayer .center-button:active {
-    color: rgb(100, 75, 50);
+    color: var(--button-press-color)
 }
 
 .AudioPlayer .center-button:disabled {
@@ -109,15 +109,15 @@
     border-radius: 50%;
     border-width: 0px;
     aspect-ratio: 1;
-    color: rgb(200, 150, 100);
+    color: var(--main-text-color)
 }
 
 .AudioPlayer .side-button:active {
-    color: rgb(100, 75, 50);
+    color: var(--button-press-color)
 }
 
 .AudioPlayer .side-button:disabled {
-    color: rgb(75, 75, 100);
+    color: var(--button-disable-color)
 }
 
 .AudioPlayer .button-icon {

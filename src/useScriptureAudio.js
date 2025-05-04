@@ -28,12 +28,12 @@ const getAudioBlob = async (book, chapter) => {
   const { data } = await axios.get(url, {
     responseType: "arraybuffer",
     headers: {
-      "Content-Type": "audio/wav",
+      "Content-Type": "audio/mp3",
     },
   });
 
   return new Blob([data], {
-    type: "audio/wav",
+    type: "audio/mp3",
   });
 };
 
@@ -88,16 +88,16 @@ export const storePassage = async (passageString) => {
   const { book, chapter } = splitPassageString(passageString);
 
   let audioBlob = null;
-  try {
-    audioBlob = await localForage.getItem(`${book} ${chapter}`);
-  } catch (localError) {
-    console.error(localError);
-  }
+  // try {
+  //   audioBlob = await localForage.getItem(`${book} ${chapter}`);
+  // } catch (localError) {
+  //   console.error(localError);
+  // }
 
   if (!audioBlob) {
     try {
       audioBlob = await getAudioBlob(book, chapter);
-      localForage.setItem(`${book} ${chapter}`, audioBlob);
+      // localForage.setItem(`${book} ${chapter}`, audioBlob);
     } catch (remoteError) {
       console.error(remoteError);
     }
