@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0");
 
 :root {
   --main-text-color: rgb(25, 150, 200);
@@ -11,7 +12,6 @@
 }
 
 /* Main Layout Styles */
-
 .WLF {
   height: 100vh;
   width: 100vw;
@@ -31,33 +31,41 @@
 .WLF .header {
   flex: 0 0 96px;
   width: 100vw;
-  background: coral;
+  margin-top: 16px;
 }
 
 .WLF .body {
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .WLF .progress {
-  flex: 0 0 64px;
   width: 80vw;
-  background: maroon;
+  height:64px;
 }
 
 .WLF .controls {
-  flex: 0 0 96px;
-  width: 100vw;
-  background: coral;
+  width: 90vw;
+  height: 96px;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-evenly;
 }
 
 /* Header Styles */
 
 .WLF .title-main {
+  flex: 0 1;
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: xx-large;
+  font-size: 38px;
   color: white;
 }
 
@@ -65,26 +73,93 @@
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: large;
+  font-size: 24px;
+  line-height: 2px;
   color: white;
 }
 
 .WLF .title-accent {
+  flex: 0 1;
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: xx-large;
+  font-size: 38px;
   color: var(--background-stop0-color);
+}
+
+.WLF .title-passage {
+  font-family: "Libre Franklin", sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 38px;
+  color: white;
+  margin-top: 16px;
 }
 
 .WLF .date-button {
   font-family: "Libre Franklin", sans-serif;
   overflow: hidden;
   white-space: nowrap;
-  font-size: large;
+  font-size: 20px;
   border-radius: 2vh;
   background-color: transparent;
   border-width: 2px;
   border-color: white;
   color: white;
+}
+
+/* Body Styles */
+.WLF .circle-cutout {
+  flex: 1 1 96px;
+  max-height: 30vh;
+  border-radius: 50%;
+  aspect-ratio: 1;
+}
+
+.WLF .timer-holder {
+  flex: 0 1 32px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.WLF .timer {
+  font-size: 20px;
+  font-family: "Roboto Mono", monospace;
+  color: var(--main-text-color);
+}
+
+/* Control Styles */
+
+.WLF .button {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  font-family: "Roboto Mono", monospace;
+  font-size: 42px;
+  border-width: 0px;
+  color: var(--main-text-color);
+}
+
+.WLF .button-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.WLF .material-icon {
+  display: flex;
+  flex: 1 0 42px;
+
+}
+
+.WLF .spacer {
+  flex: 0 1 8px;
+}
+
+.WLF .button:active {
+  color: var(--button-press-color);
+}
+
+.WLF .button:disabled {
+  color: var(--button-disable-color);
 }

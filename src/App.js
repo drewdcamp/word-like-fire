@@ -152,6 +152,8 @@ const App = () => {
           <div className="divider" />
         </div>
       )}
+      
+
       <AudioPlayer PassageList={passageList} className="body" />
     </div>
   );

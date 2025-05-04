@@ -172,7 +172,7 @@ const AudioPlayer = ({ PassageList }) => {
         {loading ? (
           <div className="loading-crop">
             <ScaleLoader
-              color="#d69136"
+              color="rgb(25, 150, 200)"
               loading
               margin={2}
               radius={0}
