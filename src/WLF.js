@@ -319,7 +319,7 @@ const WLF = () => {
       <Dialog
         PaperProps={{
           style: {
-            backgroundColor: "rgba(75, 75, 100,0.75)",
+            backgroundColor: "hsla(25, 5%, 20%, 0.95)",
             padding: "16px",
             boxShadow: "none",
             color: "white",
@@ -395,7 +395,7 @@ const WLF = () => {
       </div>
       <div className="progress">
         <Slider
-          sx={{ width: "100%", color: "rgb(25, 150, 200)" }}
+          sx={{ width: "100%", color: "hsl(25, 100%, 60%)" }}
           defaultValue={0}
           value={progress}
           max={duration}

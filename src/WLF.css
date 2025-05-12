@@ -2,13 +2,25 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0");
 
 :root {
-  --main-text-color: rgb(25, 150, 200);
-  --button-press-color: rgb(50, 75, 100);
-  --button-disable-color: rgb(62, 76, 90);
+  /* You'll also need to update the slider and popup colors*/
 
-  --background-stop0-color: rgba(25, 50, 75, 1);
-  --background-stop1-color: rgba(10, 85, 115, 1);
-  --background-stop2-color: rgb(25, 150, 200);
+  --main-text-color: hsl(25, 0%, 100%);
+
+  --title-text-color: hsl(25, 0%, 100%);
+  --title-text-accent: hsl(220, 2%, 30%);
+
+  --button-active-color: hsl(25, 0%, 100%);
+  --button-press-color: hsl(25, 80%, 80%);
+  --button-disable-color: hsl(220, 2%, 30%);
+
+  --active-item-color: hsl(25, 90%, 95%);
+  --disabled-item-color: hsl(220, 2%, 30%);
+
+  --background-stop0-color: hsl(25, 5%, 20%);
+  --background-stop1-color: hsl(25, 55%, 30%);
+  --background-stop2-color: hsl(25, 60%, 55%);
+
+  --dialog-bacground-color: hsla(25, 5%, 20%, 0.95);
 }
 
 /* Main Layout Styles */
@@ -18,7 +30,7 @@
   background: linear-gradient(
     0deg,
     var(--background-stop0-color) 0%,
-    var(--background-stop1-color) 40%,
+    var(--background-stop1-color) 60%,
     var(--background-stop2-color) 100%
   );
   display: flex;
@@ -66,7 +78,7 @@
   overflow: hidden;
   white-space: nowrap;
   font-size: 38px;
-  color: white;
+  color: var(--title-text-color);
 }
 
 .WLF .title-sub {
@@ -75,7 +87,7 @@
   white-space: nowrap;
   font-size: 24px;
   line-height: 2px;
-  color: white;
+  color: var(--title-text-color);
 }
 
 .WLF .title-accent {
@@ -84,7 +96,7 @@
   overflow: hidden;
   white-space: nowrap;
   font-size: 38px;
-  color: var(--background-stop0-color);
+  color: var(--title-text-accent);
 }
 
 .WLF .title-passage {
@@ -92,7 +104,7 @@
   overflow: hidden;
   white-space: nowrap;
   font-size: 38px;
-  color: white;
+  color: var(--main-text-color);
   margin-top: 16px;
 }
 
@@ -104,8 +116,8 @@
   border-radius: 2vh;
   background-color: transparent;
   border-width: 2px;
-  border-color: white;
-  color: white;
+  border-color: var(--main-text-color);
+  color: var(--main-text-color);
 }
 
 /* Body Styles */
@@ -138,7 +150,7 @@
   font-family: "Roboto Mono", monospace;
   font-size: 42px;
   border-width: 0px;
-  color: var(--main-text-color);
+  color: var(--button-active-color);
 }
 
 .WLF .button-icon {
@@ -161,5 +173,17 @@
 }
 
 .WLF .button:disabled {
+  color: var(--button-disable-color);
+}
+
+a:link {
+  color: var(--button-active-color);
+}
+
+a:visited {
+  color: var(--button-press-color);
+}
+
+a:active {
   color: var(--button-disable-color);
 }
